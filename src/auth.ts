@@ -7,6 +7,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   // Renamed from the conventional name -- vault's security-sentinel hook
   // blanket-blocks it as a sensitive pattern even for a non-secret context.
   secret: process.env["DOLIPA_AUTH_SECRET"],
+  // Required on Vercel/serverless deploys without the official Vercel<->Auth.js
+  // integration -- without it, Auth.js can refuse the request host and surface
+  // as the same generic "server configuration" error as a missing secret.
+  trustHost: true,
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },
