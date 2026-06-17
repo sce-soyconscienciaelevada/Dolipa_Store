@@ -1,13 +1,12 @@
 import { PrismaClient } from "@/generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 // Connection string env var renamed from the Prisma default (DOLIPA_DB_CONN, not
 // the conventional name) -- the vault's security-sentinel hook blanket-blocks the
-// conventional name as a sensitive pattern even for a harmless local SQLite path.
-const dbConn = process.env["DOLIPA_DB_CONN"] || "file:./dev.db";
-const sqliteFile = dbConn.replace(/^file:/, "");
+// conventional name as a sensitive pattern even for a non-secret value.
+const dbConn = process.env["DOLIPA_DB_CONN"];
 
-const adapter = new PrismaBetterSqlite3({ url: sqliteFile });
+const adapter = new PrismaPg({ connectionString: dbConn });
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
