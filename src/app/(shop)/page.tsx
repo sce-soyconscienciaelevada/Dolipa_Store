@@ -1,12 +1,20 @@
 import Link from "next/link";
-import { getFeaturedProducts, CATEGORIES } from "@/lib/products";
+import { getFeaturedProducts, getNewestProducts, getCategoryCoverImage, CATEGORIES } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
+import CategoryCard from "@/components/CategoryCard";
+import TrustBar from "@/components/TrustBar";
 
 export default async function HomePage() {
-  const products = await getFeaturedProducts(8);
+  const [newest, featured, categoryCovers] = await Promise.all([
+    getNewestProducts(4),
+    getFeaturedProducts(4, 4),
+    Promise.all(CATEGORIES.map((c) => getCategoryCoverImage(c.slug))),
+  ]);
 
   return (
     <>
+      <TrustBar />
+
       <section className="bg-dolipa-ink text-dolipa-cream text-center py-16 px-6">
         <h1 className="font-serif text-3xl sm:text-4xl mb-3">Ropa Importada en Villa Carlos Paz</h1>
         <p className="text-sm sm:text-base opacity-80 mb-6">
@@ -20,26 +28,36 @@ export default async function HomePage() {
         </Link>
       </section>
 
-      <section className="px-6 py-6 flex flex-wrap gap-3 justify-center">
-        {CATEGORIES.map((c) => (
-          <Link
-            key={c.slug}
-            href={`/categoria/${c.slug}`}
-            className="border border-dolipa-ink rounded-full px-4 py-2 text-sm hover:bg-dolipa-ink hover:text-dolipa-cream transition"
-          >
-            {c.label}
-          </Link>
-        ))}
-      </section>
+      {newest.length > 0 && (
+        <section className="px-6 py-8">
+          <h2 className="font-serif text-2xl text-center mb-6">Recién llegados</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {newest.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <section className="px-6 py-8">
-        <h2 className="font-serif text-2xl text-center mb-6">Destacados</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+      <section className="px-6 py-8 bg-neutral-50">
+        <h2 className="font-serif text-2xl text-center mb-6">Comprá por categoría</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+          {CATEGORIES.map((c, i) => (
+            <CategoryCard key={c.slug} slug={c.slug} label={c.label} image={categoryCovers[i]} />
           ))}
         </div>
       </section>
+
+      {featured.length > 0 && (
+        <section className="px-6 py-8">
+          <h2 className="font-serif text-2xl text-center mb-6">Destacados</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {featured.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCategory, getProductsByCategory, CATEGORIES } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));
@@ -31,6 +32,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <section className="px-6 py-8">
+      <Breadcrumb items={[{ label: category.label }]} />
       <h1 className="font-serif text-2xl text-center mb-6">{category.label}</h1>
       {products.length === 0 ? (
         <p className="text-center text-neutral-500">No hay productos en esta categoría todavía.</p>

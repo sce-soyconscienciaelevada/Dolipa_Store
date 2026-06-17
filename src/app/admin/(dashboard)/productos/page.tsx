@@ -1,10 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatARS, totalStock } from "@/lib/format";
 
 export default async function AdminProductsPage() {
   const products = await prisma.product.findMany({
-    include: { variants: true, images: true },
+    include: { variants: true, images: { orderBy: { order: "asc" } } },
     orderBy: { categoria: "asc" },
   });
 
@@ -22,6 +23,7 @@ export default async function AdminProductsPage() {
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="text-left border-b border-black/10 text-neutral-500">
+            <th className="py-2"></th>
             <th className="py-2">Producto</th>
             <th className="py-2">Género</th>
             <th className="py-2">Precio</th>
@@ -33,8 +35,16 @@ export default async function AdminProductsPage() {
         <tbody>
           {products.map((p) => {
             const stock = totalStock(p.variants);
+            const cover = p.images[0]?.url;
             return (
               <tr key={p.id} className="border-b border-black/5 hover:bg-black/[0.02]">
+                <td className="py-2 pr-2">
+                  <Link href={`/admin/productos/${p.id}`}>
+                    <div className="relative w-10 h-12 bg-neutral-100 rounded overflow-hidden">
+                      {cover && <Image src={cover} alt={p.categoria} fill className="object-cover" />}
+                    </div>
+                  </Link>
+                </td>
                 <td className="py-2">
                   <Link href={`/admin/productos/${p.id}`} className="font-medium hover:underline">
                     {p.categoria}

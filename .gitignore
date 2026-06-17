@@ -45,3 +45,6 @@ next-env.d.ts
 # local sqlite dev db
 *.db
 *.db-journal
+
+# stray Windows reserved-device-name artifact some shell redirect creates
+/nul

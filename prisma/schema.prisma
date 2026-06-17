@@ -26,6 +26,7 @@ model Product {
 
   variants Variant[]
   images   ProductImage[]
+  sales    Sale[]
 }
 
 model Variant {
@@ -54,4 +55,18 @@ model AdminUser {
   email        String   @unique
   passwordHash String
   createdAt    DateTime @default(now())
+}
+
+model Sale {
+  id        String   @id @default(cuid())
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  categoria String // denormalized -- survives product edits/deletes
+  brand     String
+  size      String
+  price     Int
+  soldAt    DateTime @default(now())
+
+  @@index([productId])
+  @@index([soldAt])
 }

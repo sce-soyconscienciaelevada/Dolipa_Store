@@ -81,13 +81,27 @@ export async function updateVariantStock(variantId: string, productId: string, s
 
 export async function markVariantSold(variantId: string, productId: string) {
   await requireAdmin();
-  const variant = await prisma.variant.findUnique({ where: { id: variantId } });
+  const variant = await prisma.variant.findUnique({ where: { id: variantId }, include: { product: true } });
   if (!variant) return;
-  await prisma.variant.update({
-    where: { id: variantId },
-    data: { stock: Math.max(0, variant.stock - 1) },
-  });
+
+  await prisma.$transaction([
+    prisma.variant.update({
+      where: { id: variantId },
+      data: { stock: Math.max(0, variant.stock - 1) },
+    }),
+    prisma.sale.create({
+      data: {
+        productId: variant.product.id,
+        categoria: variant.product.categoria,
+        brand: variant.product.brand,
+        size: variant.size,
+        price: variant.product.price,
+      },
+    }),
+  ]);
+
   revalidatePath(`/admin/productos/${productId}`);
+  revalidatePath("/admin/estadisticas");
   revalidatePath("/", "layout");
 }
 
@@ -106,6 +120,23 @@ export async function deleteImage(imageId: string, productId: string) {
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     await prisma.productImage.delete({ where: { id: imageId } });
   }
+  revalidatePath(`/admin/productos/${productId}`);
+  revalidatePath("/", "layout");
+}
+
+export async function setCoverImage(imageId: string, productId: string) {
+  await requireAdmin();
+  const target = await prisma.productImage.findUnique({ where: { id: imageId } });
+  if (!target || target.order === 0) return;
+
+  const current = await prisma.productImage.findFirst({ where: { productId, order: 0 } });
+
+  await prisma.$transaction([
+    prisma.productImage.update({ where: { id: target.id }, data: { order: -1 } }),
+    ...(current ? [prisma.productImage.update({ where: { id: current.id }, data: { order: target.order } })] : []),
+    prisma.productImage.update({ where: { id: target.id }, data: { order: 0 } }),
+  ]);
+
   revalidatePath(`/admin/productos/${productId}`);
   revalidatePath("/", "layout");
 }

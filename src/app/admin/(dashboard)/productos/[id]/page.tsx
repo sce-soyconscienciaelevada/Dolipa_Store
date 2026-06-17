@@ -9,6 +9,7 @@ import {
   deleteVariant,
   deleteImage,
   uploadImage,
+  setCoverImage,
 } from "../../actions";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -177,21 +178,40 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
       <div>
         <h2 className="font-serif text-xl mb-4">Fotos</h2>
         <div className="grid grid-cols-4 gap-4 mb-4">
-          {product.images.map((img) => {
+          {product.images.map((img, idx) => {
             async function deleteImageAction() {
               "use server";
               await deleteImage(img.id, id);
             }
+            async function setCoverAction() {
+              "use server";
+              await setCoverImage(img.id, id);
+            }
+            const isCover = idx === 0;
             return (
               <div key={img.id} className="relative">
                 <div className="relative w-full aspect-[3/4] bg-neutral-100 rounded overflow-hidden">
                   <Image src={img.url} alt={product.categoria} fill className="object-cover" />
+                  {isCover && (
+                    <span className="absolute top-1 left-1 bg-dolipa-ink text-dolipa-cream text-[10px] px-1.5 py-0.5 rounded">
+                      Principal
+                    </span>
+                  )}
                 </div>
-                <form action={deleteImageAction} className="mt-1">
-                  <button type="submit" className="text-xs text-red-600 underline">
-                    Eliminar
-                  </button>
-                </form>
+                <div className="flex flex-col gap-0.5 mt-1">
+                  {!isCover && (
+                    <form action={setCoverAction}>
+                      <button type="submit" className="text-xs underline block">
+                        Marcar como principal
+                      </button>
+                    </form>
+                  )}
+                  <form action={deleteImageAction}>
+                    <button type="submit" className="text-xs text-red-600 underline">
+                      Eliminar
+                    </button>
+                  </form>
+                </div>
               </div>
             );
           })}

@@ -10,3 +10,9 @@ export const CATEGORIES: { slug: CategorySlug; label: string; filter: { prefix: 
 export function getCategory(slug: string) {
   return CATEGORIES.find((c) => c.slug === slug);
 }
+
+export function getCategoryForProduct(prefix: string, gender: string) {
+  return CATEGORIES.find(
+    (c) => c.filter.prefix.includes(prefix) && (!c.filter.gender || c.filter.gender === gender)
+  );
+}

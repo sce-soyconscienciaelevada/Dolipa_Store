@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getProductBySlug, totalStock } from "@/lib/products";
+import { getCategoryForProduct } from "@/lib/categories";
 import { prisma } from "@/lib/prisma";
 import AddToCartForm from "@/components/AddToCartForm";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export async function generateStaticParams() {
   const products = await prisma.product.findMany({ select: { slug: true } });
@@ -38,6 +40,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const stock = totalStock(product.variants);
   const mainImage = product.images[0]?.url ?? "/logo.jpg";
+  const category = getCategoryForProduct(product.prefix, product.gender);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -57,6 +60,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <section className="px-6 py-8 max-w-4xl mx-auto">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <Breadcrumb
+        items={
+          category
+            ? [{ label: category.label, href: `/categoria/${category.slug}` }, { label: product.categoria }]
+            : [{ label: product.categoria }]
+        }
+      />
       <div className="grid sm:grid-cols-2 gap-8">
         <div>
           <div className="relative w-full aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden mb-3">
