@@ -8,6 +8,7 @@ export type CartItem = {
   sku: string;
   price: number;
   qty: number;
+  maxStock: number;
   image: string | null;
 };
 
@@ -27,16 +28,18 @@ export const useCartStore = create<CartState>()(
         const existing = get().items.find((i) => i.sku === item.sku);
         if (existing) {
           set({
-            items: get().items.map((i) => (i.sku === item.sku ? { ...i, qty: i.qty + item.qty } : i)),
+            items: get().items.map((i) =>
+              i.sku === item.sku ? { ...i, qty: Math.min(i.qty + item.qty, i.maxStock) } : i
+            ),
           });
         } else {
-          set({ items: [...get().items, item] });
+          set({ items: [...get().items, { ...item, qty: Math.min(item.qty, item.maxStock) }] });
         }
       },
       removeItem: (sku) => set({ items: get().items.filter((i) => i.sku !== sku) }),
       setQty: (sku, qty) =>
         set({
-          items: get().items.map((i) => (i.sku === sku ? { ...i, qty } : i)),
+          items: get().items.map((i) => (i.sku === sku ? { ...i, qty: Math.max(1, Math.min(qty, i.maxStock)) } : i)),
         }),
       clear: () => set({ items: [] }),
     }),

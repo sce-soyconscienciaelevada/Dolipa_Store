@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getProductBySlug, totalStock } from "@/lib/products";
 import { getCategoryForProduct } from "@/lib/categories";
 import { prisma } from "@/lib/prisma";
 import AddToCartForm from "@/components/AddToCartForm";
 import Breadcrumb from "@/components/Breadcrumb";
+import ProductGallery from "@/components/ProductGallery";
 
 export async function generateStaticParams() {
   const products = await prisma.product.findMany({ select: { slug: true } });
@@ -68,20 +68,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         }
       />
       <div className="grid sm:grid-cols-2 gap-8">
-        <div>
-          <div className="relative w-full aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden mb-3">
-            <Image src={mainImage} alt={product.categoria} fill className="object-cover" priority />
-          </div>
-          {product.images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto">
-              {product.images.map((img) => (
-                <div key={img.id} className="relative w-20 h-24 flex-shrink-0 bg-neutral-100 rounded overflow-hidden">
-                  <Image src={img.url} alt={product.categoria} fill className="object-cover" />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <ProductGallery images={product.images} alt={product.categoria} />
         <div>
           <p className="text-xs uppercase tracking-wide text-neutral-500">{product.brand}</p>
           <h1 className="font-serif text-2xl mt-1 mb-3">{product.categoria}</h1>

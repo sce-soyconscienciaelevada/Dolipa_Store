@@ -131,9 +131,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                     </form>
                   </td>
                   <td className="py-2">
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 items-center">
                       <form action={markSoldAction}>
-                        <button type="submit" className="text-xs underline" title="Resta 1 al stock">
+                        <button
+                          type="submit"
+                          disabled={v.stock <= 0}
+                          title="Resta 1 al stock"
+                          className="text-xs border border-dolipa-ink rounded px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-dolipa-ink hover:text-dolipa-cream transition"
+                        >
                           Marcar vendido
                         </button>
                       </form>

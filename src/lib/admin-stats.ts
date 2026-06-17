@@ -35,17 +35,21 @@ export async function getSalesSummary() {
     .sort((a, b) => (a.day < b.day ? 1 : -1))
     .slice(0, 30);
 
-  const byProduct = new Map<string, { categoria: string; brand: string; units: number; revenue: number }>();
+  const byProductSize = new Map<
+    string,
+    { categoria: string; brand: string; size: string; units: number; revenue: number }
+  >();
   for (const s of sales) {
-    const key = s.productId ?? s.categoria;
-    const entry = byProduct.get(key) ?? { categoria: s.categoria, brand: s.brand, units: 0, revenue: 0 };
+    const key = `${s.productId ?? s.categoria}__${s.size}`;
+    const entry =
+      byProductSize.get(key) ?? { categoria: s.categoria, brand: s.brand, size: s.size, units: 0, revenue: 0 };
     entry.units += 1;
     entry.revenue += s.price;
-    byProduct.set(key, entry);
+    byProductSize.set(key, entry);
   }
-  const topProducts = Array.from(byProduct.values())
+  const topProducts = Array.from(byProductSize.values())
     .sort((a, b) => b.units - a.units)
-    .slice(0, 5);
+    .slice(0, 8);
 
   return { totalRevenue, totalUnits, salesByDay, topProducts, recentSales: sales.slice(0, 10) };
 }

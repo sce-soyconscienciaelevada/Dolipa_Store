@@ -1,5 +1,6 @@
 import { getInventorySummary, getSalesSummary } from "@/lib/admin-stats";
 import { formatARS } from "@/lib/format";
+import { deleteSale } from "../actions";
 
 export default async function EstadisticasPage() {
   const [inventory, sales] = await Promise.all([getInventorySummary(), getSalesSummary()]);
@@ -28,11 +29,12 @@ export default async function EstadisticasPage() {
           </p>
         ) : (
           <>
-            <h3 className="text-sm font-medium mb-2">Top productos</h3>
+            <h3 className="text-sm font-medium mb-2">Top productos por talle</h3>
             <table className="w-full text-sm mb-6">
               <thead>
                 <tr className="text-left text-neutral-500 border-b border-black/10">
                   <th className="py-1.5">Producto</th>
+                  <th className="py-1.5">Talle</th>
                   <th className="py-1.5">Unidades</th>
                   <th className="py-1.5">Ingresos</th>
                 </tr>
@@ -43,6 +45,7 @@ export default async function EstadisticasPage() {
                     <td className="py-1.5">
                       {p.categoria} <span className="text-neutral-400">({p.brand})</span>
                     </td>
+                    <td className="py-1.5">{p.size}</td>
                     <td className="py-1.5">{p.units}</td>
                     <td className="py-1.5">{formatARS(p.revenue)}</td>
                   </tr>
@@ -51,7 +54,7 @@ export default async function EstadisticasPage() {
             </table>
 
             <h3 className="text-sm font-medium mb-2">Ventas por día (últimos 30 días)</h3>
-            <table className="w-full text-sm">
+            <table className="w-full text-sm mb-6">
               <thead>
                 <tr className="text-left text-neutral-500 border-b border-black/10">
                   <th className="py-1.5">Día</th>
@@ -67,6 +70,47 @@ export default async function EstadisticasPage() {
                     <td className="py-1.5">{formatARS(d.revenue)}</td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+
+            <h3 className="text-sm font-medium mb-2">Ventas recientes</h3>
+            <p className="text-xs text-neutral-500 mb-2">
+              ¿Marcaste algo vendido por error? Eliminalo acá -- repone 1 unidad de stock automáticamente.
+            </p>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-neutral-500 border-b border-black/10">
+                  <th className="py-1.5">Producto</th>
+                  <th className="py-1.5">Talle</th>
+                  <th className="py-1.5">Precio</th>
+                  <th className="py-1.5">Fecha</th>
+                  <th className="py-1.5"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sales.recentSales.map((s) => {
+                  async function deleteSaleAction() {
+                    "use server";
+                    await deleteSale(s.id);
+                  }
+                  return (
+                    <tr key={s.id} className="border-b border-black/5">
+                      <td className="py-1.5">
+                        {s.categoria} <span className="text-neutral-400">({s.brand})</span>
+                      </td>
+                      <td className="py-1.5">{s.size}</td>
+                      <td className="py-1.5">{formatARS(s.price)}</td>
+                      <td className="py-1.5">{s.soldAt.toLocaleString("es-AR")}</td>
+                      <td className="py-1.5">
+                        <form action={deleteSaleAction}>
+                          <button type="submit" className="text-xs text-red-600 underline">
+                            Eliminar (repone stock)
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </>

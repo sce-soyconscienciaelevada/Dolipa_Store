@@ -82,7 +82,7 @@ export async function updateVariantStock(variantId: string, productId: string, s
 export async function markVariantSold(variantId: string, productId: string) {
   await requireAdmin();
   const variant = await prisma.variant.findUnique({ where: { id: variantId }, include: { product: true } });
-  if (!variant) return;
+  if (!variant || variant.stock <= 0) return;
 
   await prisma.$transaction([
     prisma.variant.update({
@@ -102,6 +102,26 @@ export async function markVariantSold(variantId: string, productId: string) {
 
   revalidatePath(`/admin/productos/${productId}`);
   revalidatePath("/admin/estadisticas");
+  revalidatePath("/", "layout");
+}
+
+export async function deleteSale(saleId: string) {
+  await requireAdmin();
+  const sale = await prisma.sale.findUnique({ where: { id: saleId } });
+  if (!sale) return;
+
+  const variant = sale.productId
+    ? await prisma.variant.findFirst({ where: { productId: sale.productId, size: sale.size } })
+    : null;
+
+  await prisma.$transaction([
+    ...(variant ? [prisma.variant.update({ where: { id: variant.id }, data: { stock: variant.stock + 1 } })] : []),
+    prisma.sale.delete({ where: { id: saleId } }),
+  ]);
+
+  revalidatePath("/admin/estadisticas");
+  revalidatePath("/admin/productos");
+  if (sale.productId) revalidatePath(`/admin/productos/${sale.productId}`);
   revalidatePath("/", "layout");
 }
 

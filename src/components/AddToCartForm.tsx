@@ -19,6 +19,7 @@ export default function AddToCartForm({ productSlug, productName, price, image, 
   const availableVariants = variants.filter((v) => v.stock > 0);
   const [selectedSku, setSelectedSku] = useState(availableVariants[0]?.sku ?? "");
   const [added, setAdded] = useState(false);
+  const items = useCartStore((s) => s.items);
   const addItem = useCartStore((s) => s.addItem);
   const router = useRouter();
 
@@ -27,9 +28,11 @@ export default function AddToCartForm({ productSlug, productName, price, image, 
   }
 
   const selected = availableVariants.find((v) => v.sku === selectedSku);
+  const inCartQty = selected ? items.find((i) => i.sku === selected.sku)?.qty ?? 0 : 0;
+  const atLimit = selected ? inCartQty >= selected.stock : false;
 
   function handleAdd() {
-    if (!selected) return;
+    if (!selected || atLimit) return;
     addItem({
       productSlug,
       productName,
@@ -37,6 +40,7 @@ export default function AddToCartForm({ productSlug, productName, price, image, 
       sku: selected.sku,
       price,
       qty: 1,
+      maxStock: selected.stock,
       image,
     });
     setAdded(true);
@@ -60,16 +64,22 @@ export default function AddToCartForm({ productSlug, productName, price, image, 
           </button>
         ))}
       </div>
+      {atLimit && (
+        <p className="text-xs text-red-600 mb-2">
+          Ya tenés en el carrito todo el stock disponible de este talle ({selected?.stock}).
+        </p>
+      )}
       <div className="flex gap-3">
         <button
           onClick={handleAdd}
-          className="flex-1 bg-dolipa-ink text-dolipa-cream font-bold py-3 rounded text-sm uppercase tracking-wide hover:opacity-90"
+          disabled={atLimit}
+          className="flex-1 bg-dolipa-ink text-dolipa-cream font-bold py-3 rounded text-sm uppercase tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {added ? "Agregado ✓" : "Agregar al carrito"}
         </button>
         <button
           onClick={() => {
-            handleAdd();
+            if (!atLimit) handleAdd();
             router.push("/carrito");
           }}
           className="flex-1 border border-dolipa-ink py-3 rounded text-sm uppercase tracking-wide hover:bg-dolipa-ink hover:text-dolipa-cream transition"
