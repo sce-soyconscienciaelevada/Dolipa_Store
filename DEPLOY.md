@@ -2,6 +2,8 @@
 
 Code is pushed to `sce-soyconscienciaelevada/Dolipa_Store` (main branch), ready to import in Vercel. A few things need to happen on the Vercel/DB side that I can't do without your account access -- here's exactly what to do.
 
+> Live on Neon Postgres as of 2026-06-17. `DOLIPA_DB_CONN` and `DOLIPA_AUTH_SECRET` must be set in Vercel project env vars -- newly added env vars only apply to deployments created *after* they're set, so a fresh deploy is needed any time one changes.
+
 ## 1. Get a Postgres database
 
 Local dev uses SQLite (`dev.db`) -- fine for testing, but Vercel's filesystem is ephemeral so this **will not work in production**. Pick one:
@@ -76,4 +78,4 @@ Click deploy. Once live:
 ## Known limitation: photo uploads in admin
 
 Admin photo upload writes to local disk (`public/productos/`). On Vercel this won't persist across deploys -- uploading a new photo through `/admin` in production will work for that request but won't survive the next deploy. Fine for now since all 23 products already have photos baked into the repo; flag it if you need to add a brand-new product's photos after going live, and I'll wire up Vercel Blob storage for that (it's a real but contained follow-up, not needed for launch).
-<!-- updated: 2026-06-17 14:57 -->
+<!-- updated: 2026-06-17 15:57 -->
