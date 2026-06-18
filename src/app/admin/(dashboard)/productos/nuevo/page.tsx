@@ -14,23 +14,23 @@ export default function NewProductPage() {
       <form action={action} className="space-y-4">
         <div>
           <label className="text-sm font-medium block mb-1">Categoría (nombre del producto)</label>
-          <input name="categoria" required className="w-full border border-black/20 rounded px-3 py-2 text-sm" />
+          <input name="categoria" required className="w-full border border-black/20 rounded px-3 py-2 text-base" />
         </div>
         <div>
           <label className="text-sm font-medium block mb-1">Marca</label>
-          <input name="brand" required className="w-full border border-black/20 rounded px-3 py-2 text-sm" />
+          <input name="brand" required className="w-full border border-black/20 rounded px-3 py-2 text-base" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium block mb-1">Género</label>
-            <select name="gender" className="w-full border border-black/20 rounded px-3 py-2 text-sm">
+            <select name="gender" className="w-full border border-black/20 rounded px-3 py-2 text-base">
               <option value="H">Hombre</option>
               <option value="M">Mujer</option>
             </select>
           </div>
           <div>
             <label className="text-sm font-medium block mb-1">Tipo de prenda</label>
-            <select name="prefix" className="w-full border border-black/20 rounded px-3 py-2 text-sm">
+            <select name="prefix" className="w-full border border-black/20 rounded px-3 py-2 text-base">
               <option value="REM">Remera</option>
               <option value="BUZ">Buzo</option>
               <option value="CAM">Campera</option>
@@ -41,15 +41,15 @@ export default function NewProductPage() {
         </div>
         <div>
           <label className="text-sm font-medium block mb-1">Color</label>
-          <input name="color" defaultValue="Sin color" className="w-full border border-black/20 rounded px-3 py-2 text-sm" />
+          <input name="color" defaultValue="Sin color" className="w-full border border-black/20 rounded px-3 py-2 text-base" />
         </div>
         <div>
           <label className="text-sm font-medium block mb-1">Precio (ARS)</label>
-          <input name="price" type="number" required className="w-full border border-black/20 rounded px-3 py-2 text-sm" />
+          <input name="price" type="number" required className="w-full border border-black/20 rounded px-3 py-2 text-base" />
         </div>
         <div>
           <label className="text-sm font-medium block mb-1">Descripción</label>
-          <textarea name="description" rows={4} className="w-full border border-black/20 rounded px-3 py-2 text-sm" />
+          <textarea name="description" rows={4} className="w-full border border-black/20 rounded px-3 py-2 text-base" />
         </div>
         <button type="submit" className="bg-dolipa-ink text-dolipa-cream px-4 py-2 rounded text-sm font-medium">
           Crear producto

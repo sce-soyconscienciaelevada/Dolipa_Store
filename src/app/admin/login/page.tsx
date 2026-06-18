@@ -20,14 +20,14 @@ export default function LoginPage() {
           name="email"
           type="email"
           required
-          className="w-full border border-black/20 rounded px-3 py-2 mb-4 text-sm"
+          className="w-full border border-black/20 rounded px-3 py-2 mb-4 text-base"
         />
         <label className="text-sm font-medium block mb-1">Contraseña</label>
         <input
           name="password"
           type="password"
           required
-          className="w-full border border-black/20 rounded px-3 py-2 mb-4 text-sm"
+          className="w-full border border-black/20 rounded px-3 py-2 mb-4 text-base"
         />
         {state?.error && <p className="text-sm text-red-600 mb-4">{state.error}</p>}
         <button

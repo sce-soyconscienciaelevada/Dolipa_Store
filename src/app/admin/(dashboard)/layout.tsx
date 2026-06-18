@@ -10,12 +10,12 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
 
   return (
     <div>
-      <header className="flex items-center justify-between px-6 py-3 bg-dolipa-ink text-dolipa-cream">
-        <div className="flex items-center gap-6">
-          <Link href="/admin" className="font-serif text-lg">
+      <header className="flex flex-wrap items-center justify-between gap-y-2 px-4 sm:px-6 py-3 bg-dolipa-ink text-dolipa-cream">
+        <div className="flex items-center gap-3 sm:gap-6">
+          <Link href="/admin" className="font-serif text-base sm:text-lg">
             Dolipa Admin
           </Link>
-          <nav className="flex items-center gap-4 text-sm">
+          <nav className="flex items-center gap-2.5 sm:gap-4 text-xs sm:text-sm">
             <Link href="/admin" className="hover:underline">
               Inicio
             </Link>
@@ -27,8 +27,8 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
             </Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4 text-sm">
-          <span className="opacity-70">{session.user.email}</span>
+        <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm">
+          <span className="opacity-70 hidden sm:inline">{session.user.email}</span>
           <form
             action={async () => {
               "use server";
@@ -41,7 +41,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           </form>
         </div>
       </header>
-      <main className="px-6 py-8 max-w-5xl mx-auto">{children}</main>
+      <main className="px-4 sm:px-6 py-8 max-w-5xl mx-auto overflow-x-hidden">{children}</main>
     </div>
   );
 }

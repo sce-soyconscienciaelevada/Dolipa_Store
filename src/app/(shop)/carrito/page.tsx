@@ -38,9 +38,10 @@ export default function CartPage() {
                 <input
                   type="number"
                   min={1}
+                  max={item.maxStock}
                   value={item.qty}
-                  onChange={(e) => setQty(item.sku, Math.max(1, Number(e.target.value)))}
-                  className="w-14 border border-black/20 rounded px-2 py-1 text-sm"
+                  onChange={(e) => setQty(item.sku, Number(e.target.value))}
+                  className="w-16 border border-black/20 rounded px-2 py-1 text-base"
                 />
                 <button onClick={() => removeItem(item.sku)} className="text-xs text-red-600 underline ml-2">
                   Quitar

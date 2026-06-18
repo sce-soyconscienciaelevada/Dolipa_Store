@@ -46,7 +46,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               name="categoria"
               defaultValue={product.categoria}
               required
-              className="w-full border border-black/20 rounded px-3 py-2 text-sm"
+              className="w-full border border-black/20 rounded px-3 py-2 text-base"
             />
           </div>
           <div>
@@ -55,7 +55,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               name="brand"
               defaultValue={product.brand}
               required
-              className="w-full border border-black/20 rounded px-3 py-2 text-sm"
+              className="w-full border border-black/20 rounded px-3 py-2 text-base"
             />
           </div>
           <div>
@@ -65,7 +65,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               type="number"
               defaultValue={product.price}
               required
-              className="w-full border border-black/20 rounded px-3 py-2 text-sm"
+              className="w-full border border-black/20 rounded px-3 py-2 text-base"
             />
           </div>
           <div>
@@ -74,7 +74,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               name="description"
               defaultValue={product.description}
               rows={5}
-              className="w-full border border-black/20 rounded px-3 py-2 text-sm"
+              className="w-full border border-black/20 rounded px-3 py-2 text-base"
             />
           </div>
           <label className="flex items-center gap-2 text-sm">
@@ -89,7 +89,8 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
       <div>
         <h2 className="font-serif text-xl mb-4">Talles y stock</h2>
-        <table className="w-full text-sm mb-4">
+        <div className="overflow-x-auto -mx-4 sm:mx-0 mb-4">
+        <table className="w-full text-sm min-w-[480px] sm:min-w-0 px-4 sm:px-0">
           <thead>
             <tr className="text-left text-neutral-500 border-b border-black/10">
               <th className="py-2">Talle</th>
@@ -123,7 +124,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                         type="number"
                         min={0}
                         defaultValue={v.stock}
-                        className="w-16 border border-black/20 rounded px-2 py-1 text-sm"
+                        className="w-16 border border-black/20 rounded px-2 py-1 text-base"
                       />
                       <button type="submit" className="text-xs underline">
                         Actualizar
@@ -154,15 +155,16 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
             })}
           </tbody>
         </table>
+        </div>
 
-        <form action={addVariantAction} className="flex gap-2 items-end border border-black/10 rounded-lg p-4">
+        <form action={addVariantAction} className="flex flex-wrap gap-2 items-end border border-black/10 rounded-lg p-4">
           <div>
             <label className="text-xs font-medium block mb-1">Talle</label>
-            <input name="size" required className="w-20 border border-black/20 rounded px-2 py-1.5 text-sm" />
+            <input name="size" required className="w-20 border border-black/20 rounded px-2 py-1.5 text-base" />
           </div>
           <div>
             <label className="text-xs font-medium block mb-1">SKU</label>
-            <input name="sku" required className="w-40 border border-black/20 rounded px-2 py-1.5 text-sm" />
+            <input name="sku" required className="w-40 border border-black/20 rounded px-2 py-1.5 text-base" />
           </div>
           <div>
             <label className="text-xs font-medium block mb-1">Stock</label>
@@ -171,7 +173,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               type="number"
               min={0}
               defaultValue={0}
-              className="w-20 border border-black/20 rounded px-2 py-1.5 text-sm"
+              className="w-20 border border-black/20 rounded px-2 py-1.5 text-base"
             />
           </div>
           <button type="submit" className="bg-dolipa-ink text-dolipa-cream px-3 py-1.5 rounded text-sm">
@@ -182,7 +184,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
       <div>
         <h2 className="font-serif text-xl mb-4">Fotos</h2>
-        <div className="grid grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 mb-4">
           {product.images.map((img, idx) => {
             async function deleteImageAction() {
               "use server";

@@ -30,7 +30,8 @@ export default async function EstadisticasPage() {
         ) : (
           <>
             <h3 className="text-sm font-medium mb-2">Top productos por talle</h3>
-            <table className="w-full text-sm mb-6">
+            <div className="overflow-x-auto -mx-4 sm:mx-0 mb-6">
+            <table className="w-full text-sm min-w-[480px] sm:min-w-0 px-4 sm:px-0">
               <thead>
                 <tr className="text-left text-neutral-500 border-b border-black/10">
                   <th className="py-1.5">Producto</th>
@@ -52,6 +53,7 @@ export default async function EstadisticasPage() {
                 ))}
               </tbody>
             </table>
+            </div>
 
             <h3 className="text-sm font-medium mb-2">Ventas por día (últimos 30 días)</h3>
             <table className="w-full text-sm mb-6">
@@ -77,7 +79,8 @@ export default async function EstadisticasPage() {
             <p className="text-xs text-neutral-500 mb-2">
               ¿Marcaste algo vendido por error? Eliminalo acá -- repone 1 unidad de stock automáticamente.
             </p>
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <table className="w-full text-sm min-w-[560px] sm:min-w-0 px-4 sm:px-0">
               <thead>
                 <tr className="text-left text-neutral-500 border-b border-black/10">
                   <th className="py-1.5">Producto</th>
@@ -113,6 +116,7 @@ export default async function EstadisticasPage() {
                 })}
               </tbody>
             </table>
+            </div>
           </>
         )}
       </div>
